@@ -1,0 +1,402 @@
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<meta charset="UTF-8" />
+<title>How To Build LineageOS For Barnes &amp; Noble Nook Color ("encore") - LineageOS</title>
+</head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-Build_for_encore skin-vector action-view">
+		<div id="mw-page-base" class="noprint"></div>
+		<div id="mw-head-base" class="noprint"></div>
+		<div id="content" class="mw-body" role="main">
+			<a id="top"></a>
+
+						<div class="mw-indicators">
+</div>
+			<h1 id="firstHeading" class="firstHeading" lang="en">How To Build LineageOS For Barnes &amp; Noble Nook Color ("encore")</h1>
+									<div id="bodyContent" class="mw-body-content">
+									<div id="siteSub">Restored from the LineageOS (formerly CyanogenMod) Wiki.  Some links below will no longer work, and there are some references to "cm" and "cyanogenmod" which should now refer to "los", "lineage" or "LineageOS"</div>
+
+	<ul id="footer-info">
+											<li id="footer-info-lastmod"> This page was last modified on 19 November 2012, at 18:42.</li>
+									</ul>
+
+<p><br />
+</p>
+<div id="toc" class="toc"><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1"><a href="#Introduction"><span class="tocnumber">1</span> <span class="toctext">Introduction</span></a>
+<ul>
+<li class="toclevel-2"><a href="#What_you.E2.80.99ll_need"><span class="tocnumber">1.1</span> <span class="toctext">What you’ll need</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1"><a href="#Build_LineageOS_and_LineageOS_Recovery"><span class="tocnumber">2</span> <span class="toctext">Build LineageOS and LineageOS Recovery</span></a>
+<ul>
+<li class="toclevel-2"><a href="#Prepare_the_Build_Environment"><span class="tocnumber">2.1</span> <span class="toctext">Prepare the Build Environment</span></a>
+<ul>
+<li class="toclevel-3"><a href="#Install_the_SDK"><span class="tocnumber">2.1.1</span> <span class="toctext">Install the SDK</span></a></li>
+<li class="toclevel-3"><a href="#Install_the_Build_Packages"><span class="tocnumber">2.1.2</span> <span class="toctext">Install the Build Packages</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2"><a href="#Create_the_directories"><span class="tocnumber">2.2</span> <span class="toctext">Create the directories</span></a></li>
+<li class="toclevel-2"><a href="#Install_the_repo_command"><span class="tocnumber">2.3</span> <span class="toctext">Install the repo command</span></a></li>
+<li class="toclevel-2"><a href="#Put_the_.7E.2Fbin_directory_in_your_path_of_execution"><span class="tocnumber">2.4</span> <span class="toctext">Put the ~/bin directory in your path of execution</span></a></li>
+<li class="toclevel-2"><a href="#Initialize_the_LineageOS_source_repository"><span class="tocnumber">2.5</span> <span class="toctext">Initialize the LineageOS source repository</span></a></li>
+<li class="toclevel-2"><a href="#Download_the_source_code"><span class="tocnumber">2.6</span> <span class="toctext">Download the source code</span></a></li>
+<li class="toclevel-2"><a href="#Get_prebuilt_apps_.28CM11_and_below.29"><span class="tocnumber">2.7</span> <span class="toctext">Get prebuilt apps (CM11 and below)</span></a></li>
+<li class="toclevel-2"><a href="#Prepare_the_device-specific_code"><span class="tocnumber">2.8</span> <span class="toctext">Prepare the device-specific code</span></a></li>
+<li class="toclevel-2"><a href="#Extract_proprietary_blobs"><span class="tocnumber">2.9</span> <span class="toctext">Extract proprietary blobs</span></a></li>
+<li class="toclevel-2"><a href="#Turn_on_caching_to_speed_up_build"><span class="tocnumber">2.10</span> <span class="toctext">Turn on caching to speed up build</span></a></li>
+<li class="toclevel-2"><a href="#Start_the_build"><span class="tocnumber">2.11</span> <span class="toctext">Start the build</span></a></li>
+<li class="toclevel-2"><a href="#If_the_build_breaks..."><span class="tocnumber">2.12</span> <span class="toctext">If the build breaks...</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1"><a href="#Install_the_build"><span class="tocnumber">3</span> <span class="toctext">Install the build</span></a>
+<ul>
+<li class="toclevel-2"><a href="#Install_LineageOS"><span class="tocnumber">3.1</span> <span class="toctext">Install LineageOS</span></a></li>
+<li class="toclevel-2"><a href="#Success.21_So....what.27s_next.3F"><span class="tocnumber">3.2</span> <span class="toctext">Success!  So....what's next?</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1"><a href="#To_get_assistance"><span class="tocnumber">4</span> <span class="toctext">To get assistance</span></a></li>
+</ul>
+</div>
+
+<p><br />
+</p>
+<h2><span class="mw-headline" id="Introduction">Introduction</span></h2>
+<p>These instructions will hopefully assist you to start with a stock Nook Color, unlock the bootloader (if necessary), and then download the required tools as well as the very latest source code for LineageOS (based on Google’s Android operating system). Using these, you can build both LineageOS and LineageOS Recovery image from source code, and then install them both to your device.
+</p><p>It is difficult to say how much experience is necessary to follow these instructions. While this guide is certainly not for the very very very uninitiated, these steps shouldn’t require a PhD in software development either. Some readers will have no difficulty and breeze through the steps easily. Others may struggle over the most basic operation. Because people’s experiences, backgrounds, and intuitions differ, it may be a good idea to read through just to ascertain whether you feel comfortable or are getting over your head.
+</p><p>Remember, you assume all risk of trying this, but you will reap the rewards! It’s pretty satisfying to boot into a fresh operating system you baked at home&#160;:) And once you’re an Android-building ninja, there will be no more need to wait for “nightly” builds from anyone. You will have at your fingertips the skills to build a full operating system from code to a running device, whenever you want. Where you go from there-- maybe you’ll add a feature, fix a bug, add a translation, or use what you’ve learned to build a new app or port to a new device-- or maybe you’ll never build again-- it’s all really up to you.
+</p>
+<h3><span class="mw-headline" id="What_you.E2.80.99ll_need">What you’ll need</span></h3>
+<table style="border: solid 1px #FFF; background: lightgrey; color: darkcyan; font-size: 100%">
+
+<tr>
+
+</td></tr></table>
+<ul><li> A <a href="/w/Encore_Info" title="Encore Info">Nook Color</a></li>
+<li> A relatively recent computer (Linux, OS X, or Windows) with a reasonable amount of RAM and about 100 GB of free storage (more if you enable ccache or build for multiple devices). The less RAM you have, the longer the build will take (aim for 8 GB or more). Using SSDs results in considerably faster build times than traditional hard drives.</li>
+<li> A USB cable compatible with the Nook Color (typically micro USB, but older devices may use mini USB or have a proprietary cable)</li>
+<li> A decent internet connection &amp; reliable electricity&#160;:)</li>
+<li> Some familiarity with basic Android operation and terminology. It would help if you've installed custom roms on other devices and are familiar with <a href="/w/All_About_Recovery_Images" title="All About Recovery Images">recovery</a>. It may also be useful to know some basic command line concepts such as <code>cd</code> for “change directory”, the concept of directory hierarchies, that in Linux they are separated by <code>/</code>, etc.</li></ul>
+<p>If you are not accustomed to using Linux-- this is an excellent chance to learn. It’s free-- <a href="/w/Doc:_using_virtual_machines" title="Doc: using virtual machines">just download and run a virtual machine (VM)</a> such as <a rel="nofollow" target="_blank" class="external text" href="https://www.virtualbox.org/">Virtualbox</a>, then install a Linux distribution such as <a rel="nofollow" target="_blank" class="external text" href="http://www.ubuntu.com/">Ubuntu</a> (<a rel="nofollow" target="_blank" class="external text" href="https://source.android.com/source/initializing.html">AOSP vets Ubuntu</a> as well). Any recent 64-bit version should work great, but the latest is recommended. 
+</p>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Note: </b></p>
+<p>You want to use a 64-bit version of Linux. A 32-bit Linux environment will only work if you are building LineageOS 6 and older. For LineageOS 10.1, if you encounter issues with 64bit host binaries, you can set <code>BUILD_HOST_32bit=1</code> in your environment. This is generally not needed, though, especially with LineageOS 10.2 and newer.
+</p>
+</div>
+<p>Using a VM allows Linux to run as a guest inside your host computer-- a computer in a computer, if you will. If you hate Linux for whatever reason, you can always just uninstall and delete the whole thing. (There are plenty of places to find instructions for setting up Virtualbox with Ubuntu, so I’ll leave it to you to do that.)
+</p><p>So let’s begin!
+</p><p><br />
+</p>
+<h2><span class="mw-headline" id="Build_LineageOS_and_LineageOS_Recovery">Build LineageOS and LineageOS Recovery</span></h2>
+<h3><span class="mw-headline" id="Prepare_the_Build_Environment">Prepare the Build Environment</span></h3>
+<table style="border: solid 1px #FFF; background: lightgrey; color: darkcyan; font-size: 100%">
+
+<tr>
+</td></tr></table>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Note: </b></p>
+<p>You only need to do these steps the first time you build. If you previously prepared your build environment and have downloaded the LineageOS source code for another device, skip to <b><a href="#Prepare_the_device-specific_code">Prepare the device-specific code</a></b>.
+</p>
+</div>
+<p><br />
+</p>
+<h4><span class="mw-headline" id="Install_the_SDK">Install the SDK</span></h4>
+<table style="border: solid 1px #FFF; background: lightgrey; color: darkcyan; font-size: 100%">
+
+<tr>
+</td></tr></table>
+<dl><dd>If you have not previously installed <a href="/w/Doc:_adb_intro" title="Doc: adb intro">adb</a> and <a href="/w/Doc:_fastboot_intro" title="Doc: fastboot intro">fastboot</a>, install the <a href="/w/Sdk" title="Sdk" class="mw-redirect">Android SDK</a>.  "SDK" stands for Software Developer Kit, and it includes useful tools that you can use to flash software, look at the system logs in real time, grab screenshots, and more-- all from your computer.</dd></dl>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Helpful Tip</b></p>
+<p>While the SDK contains lots of different things-- the two tools you are most interested in for building Android are <a href="/w/Adb" title="Adb" class="mw-redirect">adb</a> and <a href="/w/Fastboot" title="Fastboot" class="mw-redirect">fastboot</a>, located in the <code>/platform-tools</code> directory.
+</p>
+</div>
+<h4><span class="mw-headline" id="Install_the_Build_Packages">Install the Build Packages</span></h4>
+<table style="border: solid 1px #FFF; background: lightgrey; color: darkcyan; font-size: 100%">
+
+</table>
+<p>Several "build packages" are needed to build LineageOS.  You can install these using the package manager of your choice.
+</p>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Helpful Tip</b></p>
+<p>A <a href="https://en.wikipedia.org/wiki/Package_manager" class="extiw" title="wikipedia:Package manager">package manager</a> in Linux is a system used to install or remove software (usually originating from the Internet) on your computer.  With Ubuntu, you can use the Ubuntu Software Center.  Even better, you may also use the <code>apt-get install</code> command directly in the Terminal.  (Learn more about the <a href="https://en.wikipedia.org/wiki/Advanced_Packaging_Tool" class="extiw" title="wikipedia:Advanced Packaging Tool">apt</a> packaging tool system from <a href="https://en.wikipedia.org/wiki/Advanced_Packaging_Tool" class="extiw" title="wikipedia:Advanced Packaging Tool">Wikipedia</a>.)
+</p>
+</div>
+<p>For both 32-bit &amp; 64-bit systems, you'll need:
+</p>
+<pre><code>bc bison build-essential curl flex git gnupg gperf libesd0-dev liblz4-tool libncurses5-dev libsdl1.2-dev libwxgtk2.8-dev libxml2 libxml2-utils lzop maven openjdk-7-jdk pngcrush schedtool squashfs-tools xsltproc zip zlib1g-dev</code>
+</pre>
+<p>In addition to the above, for 64-bit systems, get these:
+</p>
+<pre><code>g++-multilib gcc-multilib lib32ncurses5-dev lib32readline-gplv2-dev lib32z1-dev</code>
+</pre>
+<p>For Ubuntu 15.10 (wily) and newer, substitute:
+</p>
+<ul><li> <code>lib32readline-gplv2-dev</code> &#8594; <code>lib32readline6-dev</code></li></ul>
+<p>For Ubuntu 16.04 (xenial) and newer, substitute (additionally see java notes below):
+</p>
+<ul><li> <code>libwxgtk2.8-dev</code> &#8594; <code>libwxgtk3.0-dev</code></li>
+<li> <code>openjdk-7-jdk</code> &#8594; <code>openjdk-8-jdk</code></li></ul>
+<p><b>Java versions:</b> Different versions of LineageOS require different versions of the JDK (Java Development Kit):
+</p>
+<ul><li> LineageOS 7 - 9: Sun/Oracle Java SE 1.6</li>
+<li> LineageOS 10.1: Sun/Oracle Java SE 1.6 or 1.7</li>
+<li> LineageOS 10.2 - 11.0: Sun/Oracle Java SE 1.6 or 1.7 (OpenJDK 1.7 works fine, but the build system will display a warning)</li>
+<li> LineageOS 12.0 - 13.0: OpenJDK 1.7 (see note about OpenJDK 1.8 below)</li>
+<li> LineageOS 14.1: OpenJDK 1.8</li></ul>
+<p><b>Ubuntu 16.04 (Xenial Xerus) or newer and OpenJDK:</b> Since OpenJDK 1.7 was <a rel="nofollow" target="_blank" class="external text" href="https://bugs.launchpad.net/ubuntu/+source/openjdk-7/+bug/1563986">removed</a> from the official Ubuntu repositories, you have a couple options:
+</p>
+<ol><li> Obtain OpenJDK 1.7 from the <a rel="nofollow" target="_blank" class="external text" href="https://launchpad.net/~openjdk-r/+archive/ubuntu/ppa">openjdk-r PPA</a></li>
+<li> Enable experimental OpenJDK 1.8 support in LineageOS 13.0 (not available in earlier version). To enable OpenJDK 1.8 support, add this line to your <code>$HOME/.bashrc</code> file: <code>export EXPERIMENTAL_USE_JAVA8=true</code>.</li></ol>
+<p>Also see <a rel="nofollow" target="_blank" class="external free" href="https://source.android.com/source/initializing.html">http://source.android.com/source/initializing.html</a> which lists needed packages.
+</p>
+<h3><span class="mw-headline" id="Create_the_directories">Create the directories</span></h3>
+<table style="border: solid 1px #FFF; background: lightgrey; color: darkcyan; font-size: 100%">
+
+<tr>
+</td></tr></table>
+<p>You will need to set up some directories in your build environment.
+</p><p>To create them:
+</p>
+<pre><code>$ mkdir -p ~/bin
+$ mkdir -p ~/android/system</code>
+</pre>
+<h3><span class="mw-headline" id="Install_the_repo_command">Install the <code>repo</code> command</span></h3>
+<table style="border: solid 1px #FFF; background: lightgrey; color: darkcyan; font-size: 100%">
+
+<tr>
+</td></tr></table>
+<p>Enter the following to download the "repo" binary and make it executable (runnable):
+</p>
+<pre><code>$ curl https://storage.googleapis.com/git-repo-downloads/repo &gt; ~/bin/repo
+$ chmod a+x ~/bin/repo</code>
+</pre>
+<h3><span class="mw-headline" id="Put_the_.7E.2Fbin_directory_in_your_path_of_execution">Put the <code>~/bin</code> directory in your path of execution</span></h3>
+<p>In recent versions of Ubuntu, <code>~/bin</code> should already be in your <a href="/w/Doc:_paths" title="Doc: paths">PATH</a>. You can check this by opening <code>~/.profile</code> with a text editor and verifying the following code exists (add it if it is missing):
+</p>
+<pre><code># set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/bin" ]&#160;; then
+    PATH="$HOME/bin:$PATH"
+fi</code>
+</pre>
+<h3><span class="mw-headline" id="Initialize_the_LineageOS_source_repository">Initialize the LineageOS source repository</span></h3>
+<table style="border: solid 1px #FFF; background: lightgrey; color: darkcyan; font-size: 100%">
+
+<tr>
+</td></tr></table>
+<p>Enter the following to initialize the repository:
+</p>
+<dl><dd>Note: Make sure the lineage branch entered here is the one you wish to build and is supported on your device.</dd></dl>
+<pre><code>$ cd ~/android/system/
+$ repo init -u https://github.com/LineageOS/android.git -b lineage-13.0</code>
+</pre>
+<p><br />
+</p>
+<h3><span class="mw-headline" id="Download_the_source_code">Download the source code</span></h3>
+<table style="border: solid 1px #FFF; background: lightgrey; color: darkcyan; font-size: 100%">
+
+<tr>
+</td></tr></table>
+<p>To start the download of all the source code to your computer:
+</p>
+<pre><code>$ repo sync</code>
+</pre>
+<p>The LineageOS manifests include a sensible default configuration for <code>repo</code>, which we strongly suggest you use (i.e. don't add any options to <code>sync</code>).  For reference, our default values are <code>-j 4</code> and <code>-c</code>. The <code>-j 4</code> part means that there will be four simultaneous threads/connections.  If you experience problems syncing, you can lower this to <code>-j 3</code> or <code>-j 2</code>. <code>-c</code> will ask repo to pull in <i>only</i> the current branch, instead of the entire LineageOS history.
+</p><p>Prepare to wait a long time while the source code downloads.
+</p>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Helpful Tip</b></p>
+<p>The <code>repo sync</code> command is used to update the latest source code from LineageOS and Google. Remember it, as you can do it every few days to keep your code base fresh and up-to-date.
+</p>
+</div>
+<h3><span class="mw-headline" id="Get_prebuilt_apps_.28CM11_and_below.29">Get prebuilt apps (CM/LOS11 and below)</span></h3>
+<table style="border: solid 1px #FFF; background: lightgrey; color: darkcyan; font-size: 100%">
+
+
+</td></tr></table>
+<p>Next,
+</p>
+<pre><code>$ cd ~/android/system/vendor/cm</code>
+</pre>
+<p>then enter:
+</p>
+<pre><code>$ ./get-prebuilts</code>
+</pre>
+<p>You won't see any confirmation- just another prompt.  But this should cause some prebuilt apps to be loaded and installed into the source code.  Once completed, this does not need to be done again.
+</p><p><br />
+</p>
+<h3><span class="mw-headline" id="Prepare_the_device-specific_code">Prepare the device-specific code</span></h3>
+<table style="border: solid 1px #FFF; background: lightgrey; color: darkcyan; font-size: 100%">
+
+
+</td></tr></table>
+ <div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Helpful Tip – Errors during breakfast</b></p>
+<p>Different maintainers setup their device inheritance rules differently. Some require a vendor directory to be populated before breakfast will even succeed. If you receive an error here about vendor makefiles, then jump down to the next section <i>Extract proprietary blobs</i>. The first portion of breakfast should have succeeded at pulling in the device tree and the extract blobs script should be available. After completing that section, you can rerun <code>breakfast encore</code>
+</p>
+</div>
+<p>After the source downloads, ensure you are in the root of the source code (<code>cd ~/android/system</code>), then type:
+</p>
+<pre><code>$ source build/envsetup.sh
+$ breakfast encore</code>
+</pre>
+<p>This will download the device specific configuration and kernel source for your device. An alternative to using the <code>breakfast</code> command is to build your own <a href="/w/Doc:_Using_manifests#The_local_manifest" title="Doc: Using manifests">local manifest</a>. To do this, you will need to locate your device on <a rel="nofollow" target="_blank" class="external text" href="https://github.com/LineageOS">LineageOS's GitHub</a> and list all of the repositories defined in <b>lineage.dependencies</b> in your local manifest.
+</p>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Helpful Tip</b></p>
+<p>If you want to know more about what <code>source build/envsetup.sh</code> does or simply want to know more about the <code>breakfast</code>, <code>brunch</code> and <code>lunch</code> commands, you can head over to the <a href="/w/Envsetup_help" title="Envsetup help">Envsetup help</a> page.
+</p>
+</div>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Helpful Tip</b></p>
+<p>Instead of typing <code>cd ~/android/system</code> every time you want to return back to the root of the source code, here’s a short command that will do it for you: <code>croot</code>. To use this command, you must first run <code>source build/envsetup.sh</code> from <code>~/android/system</code>.
+</p>
+</div>
+<h3><span class="mw-headline" id="Extract_proprietary_blobs">Extract proprietary blobs</span></h3>
+<table style="border: solid 1px #FFF; background: lightgrey; color: darkcyan; font-size: 100%">
+
+<tr>
+<td><a href="/w/Comment_extract-proprietary-blobs-for-Nook_Color" title="Comment extract-proprietary-blobs-for-Nook Color">Read comments on this section</a>
+</td></tr></table>
+<p>Now ensure that your Nook Color is connected to your computer via the USB cable and that you are in the <code>~/android/system/device/bn/encore</code> directory (you can <code>cd ~/android/system/device/bn/encore</code> if necessary).  Then run the <code>extract-files.sh</code> script:
+</p>
+<pre><code>$ ./extract-files.sh</code>
+</pre>
+<p>You should see the proprietary files (aka “blobs”) get pulled from the device and moved to the <code>~/android/system/vendor/bn</code> directory. If you see errors about <a href="/w/Adb" title="Adb" class="mw-redirect">adb</a> being unable to pull the files, <a href="/w/Adb" title="Adb" class="mw-redirect">adb</a> may not be in the path of execution.  If this is the case, see the <a href="/w/Adb" title="Adb" class="mw-redirect">adb</a> page for suggestions for dealing with "command not found" errors.
+</p>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Note: </b></p>
+<p>Your device should <b>already be running</b> a build of LineageOS for the branch you wish to build for the <code>extract-files.sh</code> script to function properly.
+</p>
+</div>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Note: </b></p>
+<p>It’s important that these proprietary files are extracted to the <code>~/android/system/vendor/bn</code> directory by using the <code>extract-files.sh</code> script. Makefiles are generated at the same time to make sure the blobs are eventually copied to the device. Without these blobs, LineageOS may build without error, but you’ll be missing important functionality, such as graphics libraries that enable you to see anything!
+</p>
+</div>
+<p><br />
+</p>
+<h3><span class="mw-headline" id="Turn_on_caching_to_speed_up_build">Turn on caching to speed up build</span></h3>
+<table style="border: solid 1px #FFF; background: lightgrey; color: darkcyan; font-size: 100%">
+
+
+</td></tr></table>
+<p>You can speed up subsequent builds by adding
+</p>
+<pre><code>export USE_CCACHE=1</code>
+</pre>
+<p>to your <code>~/.bashrc</code> file (<a rel="nofollow" target="_blank" class="external text" href="https://superuser.com/questions/49289/what-is-the-bashrc-file">what's a .bashrc file?</a>). Then, specify the amount of disk space to dedicate to <a rel="nofollow" target="_blank" class="external text" href="https://ccache.samba.org/">ccache</a> by typing this from the top of your Android tree:
+</p>
+<pre><code>prebuilts/misc/linux-x86/ccache/ccache -M 50G</code>
+</pre>
+<p>where <code>50G</code> corresponds to 50GB of cache. This only needs to be run once and the setting will be remembered. Anywhere in the range of 25GB to 100GB will result in very noticeably increased build speeds (for instance, a typical 1hr build time can be reduced to 20min). If you're only building for one device, 25GB-50GB is fine. If you plan to build for several devices that do not share the same kernel source, aim for 75GB-100GB. This space will be permanently occupied on your drive, so take this into consideration. See more information about ccache on Google's <a rel="nofollow" target="_blank" class="external text" href="https://source.android.com/source/initializing.html#setting-up-ccache">android build environment initialization page</a>.
+</p>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Helpful Tip</b></p>
+<p>If you are a very active developer, working on many other projects than just Android, you might prefer to keep your Android ccache independent (because it's huge and can slow down the efficiency of ccache in your other projects). Beginning with LineageOS 12.1, you can specify environment variables for the location and size of LineageOS's ccache. Some syntax examples: <code>export ANDROID_CCACHE_DIR="$HOME/android/.ccache"</code> and <code>export ANDROID_CCACHE_SIZE="50G"</code>.
+</p>
+</div>
+<h3><span class="mw-headline" id="Start_the_build">Start the build</span></h3>
+<table style="border: solid 1px #FFF; background: lightgrey; color: darkcyan; font-size: 100%">
+
+
+</td></tr></table>
+<p>Time to start building! So now type:
+</p>
+<pre><code>$ croot
+$ brunch encore</code>
+</pre>
+<p>The build should begin.
+</p>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Helpful Tip</b></p>
+<p>If the build doesn't start, try <code>lunch</code> and choose your device from the menu.  If <i>that</i> doesn't work, try <code>breakfast</code> and choose from the menu.  The command <code>make encore</code> should then work.
+</p>
+</div>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Helpful Tip</b></p>
+<p>A second, bonus tip!  If you get a <b>command not found</b> error for <code>croot</code>, <code>brunch</code>, or <code>lunch</code>, be sure you’ve done the <code>source build/envsetup.sh</code> command in this Terminal session from the <code>~/android/system</code> directory.
+</p>
+</div>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Helpful Tip</b></p>
+<p>A third tip! If the build to fails while downloading Gello, you'll need to import a missing certificate into Maven's truststore. Detailed instructions on how to do that can be found <a rel="nofollow" target="_blank" class="external text" href="https://gist.github.com/ibrokemypie/e84868812ae9e266052647a35cee1312">here</a>
+</p>
+</div>
+<p><br />
+</p>
+<h3><span class="mw-headline" id="If_the_build_breaks...">If the build breaks...</span></h3>
+<table style="border: solid 1px #FFF; background: lightgrey; color: darkcyan; font-size: 100%">
+
+
+</td></tr></table>
+<ul><li> If you experience this not-enough-memory-related error...</li></ul>
+<pre><code>ERROR: signapk.jar failed: return code 1make: *** [out/target/product/encore/lineage_encore-ota-eng.root.zip] Error 1</code>
+</pre>
+<p>...you may want to make the following change to <code>~/android/system/build/tools/releasetools/common.py</code>:
+</p><p>Search for instances of <code>-Xmx2048m</code> (it should appear either under <code>OPTIONS.java_args</code> or near usage of <code>signapk.jar</code>), and replace it with <code>-Xmx1024m</code> or <code>-Xmx512m</code>.
+</p><p>Then start the build again (with brunch).
+</p>
+<ul><li> If you see a message about things suddenly being “killed” for no reason, your (virtual) machine may have run out of memory or storage space. Assign it more resources and try again.</li></ul>
+<h2><span class="mw-headline" id="Install_the_build">Install the build</span></h2>
+<table style="border: solid 1px #FFF; background: lightgrey; color: darkcyan; font-size: 100%">
+
+
+</td></tr></table>
+<p><br />
+Assuming the build completed without error (it will be obvious when it finishes), type:
+</p>
+<pre><code>$ cd $OUT</code>
+</pre>
+<p>in the same terminal window that you did the build. Here you’ll find all the files that were created. The stuff that will go in <code>/system</code> is in a folder called <code>system</code>. The stuff that will become your ramdisk is in a folder called <code>root</code>. And your kernel is called... <code>kernel</code>.
+</p><p>But that’s all just background info. The two files we are interested in are (1) <code>recovery.img</code>, which contains LineageOS Recovery, and (2) <code>lineage-13.0-20161224-UNOFFICIAL-encore.zip</code>, which is the LineageOS installation package.
+</p><p><br />
+</p>
+<h3><span class="mw-headline" id="Install_LineageOS">Install LineageOS</span></h3>
+<table style="border: solid 1px #FFF; background: lightgrey; color: darkcyan; font-size: 100%">
+
+</td></tr></table>
+<p>Back to the <code>$OUT</code> directory on your computer-- you should see a file that looks something like:
+</p>
+<pre><code>lineage-13.0-20161224-UNOFFICIAL-encore.zip</code>
+</pre>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Note: </b></p>
+<p>The above file name may vary depending on the version of CM you are building.  Your build may not include a version number or may identify itself as a "<code>KANG</code>" rather than <code>UNOFFICIAL</code> version.  Regardless, the file name will end in <code>.zip</code> and should be titled similarly to official builds.
+</p>
+</div>
+<p>Now you can flash the <code>cm...zip</code> file above as usual via recovery mode.  Before doing so, now is a good time to make a backup of whatever installation is currently running on the device in case something goes wrong with the flash attempt. While LineageOS Recovery doesn't have a backup feature, there are other custom recoveries available that do. You can also use something like Titanium Backup (root required) as an alternative. 
+</p>
+<h3><span class="mw-headline" id="Success.21_So....what.27s_next.3F">Success!  So....what's next?</span></h3>
+<p><i>You've done it!</i>  Welcome to the elite club of self-builders.  You've built your operating system from scratch, from the ground up.  You are the master/mistress of your domain... and hopefully you've learned a bit on the way and had some fun too.
+</p><p>Now that you've succeeded in building LineageOS for your device, here are <a href="/w/After_You_Build" title="After You Build">some suggestions on what to do next</a>.
+</p><p>Also, be sure to take a glance at the <a href="/w/Development" title="Development">Dev Center</a> on this wiki for all kinds of more detailed information about developer topics ranging from <a href="/w/Doc:_debugging_with_logcat" title="Doc: debugging with logcat">collecting logs</a>, understanding <a href="/w/Doc:_the_cm_source" title="Doc: the cm source">what's in the source code directories</a>, <a href="/w/Doc:_using_gerrit" title="Doc: using gerrit">submitting your own contributions</a>, <a href="/w/Doc:_porting_intro" title="Doc: porting intro">porting LineageOS</a> to new devices, and a lot more.
+</p><p>Congrats again!
+</p>
+<h2><span class="mw-headline" id="To_get_assistance">To get assistance</span></h2>
+<table style="border: solid 1px #FFF; background: lightgrey; color: darkcyan; font-size: 100%">
+
+</td></tr></table>
+<ul><li> <a rel="nofollow" target="_blank" class="external text" href="https://webchat.freenode.net/?channels=LineageOS-dev">#LineageOS-dev</a> - A helpful, real-time chat room (or “channel”) on Freenode IRC (Internet Relay Chat).</li></ul>
+
+	</body>
+</html>
+
