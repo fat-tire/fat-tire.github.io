@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="client-nojs">
+<head>
+<meta charset="UTF-8" />
+<title>How To Port CyanogenMod/LineageOS Android To Your Own Device</title>
+
+</script>
+</head>
+<body>
+
+						<div class="mw-indicators">
+</div>
+			<h1 id="firstHeading" class="firstHeading" lang="en">How To Port CyanogenMod/LineageOS Android To Your Own Device</h1>
+
+This page was last modified on 10 March 2016, at 16:46.  <br/>
+
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div id="siteSub">Note that this page is a quick and dirty restoration from the LineageOS (formerly CyanogenMod) Wiki.  Most links below will no longer 
+work, and there are some references to "cm" and "cyanogenmod" which should now refer to "los", "lineage" or "LineageOS".  The bulk of this document was written by fattire and utkanos with tweaks and contributions from the CM community.</div>
+</div>
+<div id="toc" class="toc"><div id="toctitle"><h2>Contents</h2></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Some_tips_on_porting_CyanogenMod_to_your_own_device"><span class="tocnumber">1</span> <span class="toctext">Some tips on porting CyanogenMod to your own device</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Prerequisites"><span class="tocnumber">2</span> <span class="toctext">Prerequisites</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Collect_information_about_your_device"><span class="tocnumber">3</span> <span class="toctext">Collect information about your device</span></a>
+<ul>
+<li class="toclevel-2 tocsection-4"><a href="#Look_at_the_device.27s_current_.2Fsystem.2Fbuild.prop"><span class="tocnumber">3.1</span> <span class="toctext">Look at the device's current /system/build.prop</span></a></li>
+<li class="toclevel-2 tocsection-5"><a href="#Examine_boot.img_and_recovery.img"><span class="tocnumber">3.2</span> <span class="toctext">Examine boot.img and recovery.img</span></a></li>
+<li class="toclevel-2 tocsection-6"><a href="#Collect_any_available_existing_source_code"><span class="tocnumber">3.3</span> <span class="toctext">Collect any available existing source code</span></a></li>
+<li class="toclevel-2 tocsection-7"><a href="#Determine_the_partition_scheme"><span class="tocnumber">3.4</span> <span class="toctext">Determine the partition scheme</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-8"><a href="#Set_up_three_new_directories"><span class="tocnumber">4</span> <span class="toctext">Set up three new directories</span></a>
+<ul>
+<li class="toclevel-2 tocsection-9"><a href="#Method_1:_Use_mkvendor.sh_to_generate_skeleton_files"><span class="tocnumber">4.1</span> <span class="toctext">Method 1:  Use mkvendor.sh to generate skeleton files</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="#Method_2:_Fork_a_similar_device.27s_git_repository"><span class="tocnumber">4.2</span> <span class="toctext">Method 2: Fork a similar device's git repository</span></a></li>
+<li class="toclevel-2 tocsection-11"><a href="#Method_3:_create_the_directories_and_files_manually"><span class="tocnumber">4.3</span> <span class="toctext">Method 3: create the directories and files manually</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-12"><a href="#Customize_the_files"><span class="tocnumber">5</span> <span class="toctext">Customize the files</span></a>
+<ul>
+<li class="toclevel-2 tocsection-13"><a href="#BoardConfig.mk"><span class="tocnumber">5.1</span> <span class="toctext">BoardConfig.mk</span></a></li>
+<li class="toclevel-2 tocsection-14"><a href="#device_.5Bcodename.5D.mk"><span class="tocnumber">5.2</span> <span class="toctext">device_[codename].mk</span></a></li>
+<li class="toclevel-2 tocsection-15"><a href="#kernel"><span class="tocnumber">5.3</span> <span class="toctext">kernel</span></a></li>
+<li class="toclevel-2 tocsection-16"><a href="#cm.mk"><span class="tocnumber">5.4</span> <span class="toctext">cm.mk</span></a></li>
+<li class="toclevel-2 tocsection-17"><a href="#recovery.fstab"><span class="tocnumber">5.5</span> <span class="toctext">recovery.fstab</span></a></li>
+<li class="toclevel-2 tocsection-18"><a href="#vendorsetup.sh"><span class="tocnumber">5.6</span> <span class="toctext">vendorsetup.sh</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-19"><a href="#Then_build_a_test_recovery_image"><span class="tocnumber">6</span> <span class="toctext">Then build a test recovery image</span></a>
+<ul>
+<li class="toclevel-2 tocsection-20"><a href="#Adjust_recovery_ui.cpp_if_necessary"><span class="tocnumber">6.1</span> <span class="toctext">Adjust recovery_ui.cpp if necessary</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-21"><a href="#Put_your_device_folder_in_github.2C_and_use_a_local_manifest_to_automatically_sync_it_with_repo_sync"><span class="tocnumber">7</span> <span class="toctext">Put your device folder in github, and use a local manifest to automatically sync it with repo sync</span></a></li>
+<li class="toclevel-1 tocsection-22"><a href="#Add_the_blobs_to_the_vendor.2F_directory"><span class="tocnumber">8</span> <span class="toctext">Add the blobs to the vendor/ directory</span></a></li>
+<li class="toclevel-1 tocsection-23"><a href="#Now_revise_the_device.2F_directory"><span class="tocnumber">9</span> <span class="toctext">Now revise the device/ directory</span></a></li>
+<li class="toclevel-1 tocsection-24"><a href="#Getting_help_from_the_manufacturers_.26_vendors"><span class="tocnumber">10</span> <span class="toctext">Getting help from the manufacturers &amp; vendors</span></a></li>
+<li class="toclevel-1 tocsection-25"><a href="#Adding_XML_Overlays"><span class="tocnumber">11</span> <span class="toctext">Adding XML Overlays</span></a></li>
+<li class="toclevel-1 tocsection-26"><a href="#Make_the_kernel_and_kernel_modules_build_from_source"><span class="tocnumber">12</span> <span class="toctext">Make the kernel and kernel modules build from source</span></a></li>
+<li class="toclevel-1 tocsection-27"><a href="#Conclusion"><span class="tocnumber">13</span> <span class="toctext">Conclusion</span></a></li>
+<li class="toclevel-1 tocsection-28"><a href="#See_Also"><span class="tocnumber">14</span> <span class="toctext">See Also</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Some_tips_on_porting_CyanogenMod_to_your_own_device">Some tips on porting CyanogenMod to your own device</span></h2>
+<p>So you may come across a phone or tablet or whatever that does not yet have CyanogenMod available.
+</p><p>You've previously built CyanogenMod on your computer for another device or two, and you feel comfortable with the process.  In fact, you've still got the source code standing by and are ready to tackle a big project.
+</p><p>Looks like this is your opportunity to shine!
+</p>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Note: </b></p>
+<p>For the purposes of this tutorial, all references to directories will assume you are in the root of the source code (ie, where you did the <code>repo init</code>), and folder names will be relative to there.  If you followed the build guide, the root of the source code is at <code>~/android/system</code>
+</p>
+</div>
+<h2><span class="mw-headline" id="Prerequisites">Prerequisites</span></h2>
+<p>Porting CyanogenMod to a new device can be ridiculously easy or ridiculously difficult, depending on the device itself, whether it currently runs a recent version of Android or not, and of course your skills as a developer matter too.
+</p><p>It would be pretty hard to do a port without having built CyanogenMod (and recovery) previously for another device.  So if you haven't done a <a href="/w/Build_Guides" title="Build Guides">build or two</a>, give it a shot.
+</p>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Helpful Tip</b></p>
+<p>If you found this page other than via the CyanogenMod Learning Center, head over to <a href="/w/Development" title="Development">Development</a> for much more information.
+</p>
+</div>
+<p><br />
+Additionally, you should familiarize yourself with the CyanogenMod source code.  You should expect that, barring some rare exceptions, nearly everything you need to do will be in the <code>/device/[vendor]/[codename]</code>, <code>/vendor/[vendor]/[codename]</code>, and <code>/kernel/[vendor]/[codename]</code> directories.
+</p>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Helpful Tip</b></p>
+<p>For a more-detailed overview of what's where in the CyanogenMod source folders, see <a href="/w/Doc:_the_cm_source" title="Doc: the cm source">here</a>.  In fact, you really should read this if you plan on doing a port.
+</p>
+</div>
+<h2><span class="mw-headline" id="Collect_information_about_your_device">Collect information about your device</span></h2>
+<p>Before you begin your port, you will want to collect as much information about your device as you can.  Go to <a href="https://en.wikipedia.org/wiki/wikipedia" class="extiw" title="wikipedia:wikipedia">wikipedia</a> and identify the product name, code name, architecture, memory size, internal storage size, and platform architecture.  Put this information in a file for easy retrieval.  Try to learn as much about the device, including any similarities it may have to other devices.
+</p>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Helpful Tip</b></p>
+<p>Many devices are architecturally similar to other devices that are already on the market and have existing CM ports.  When a new device comes out, see if you can find out if it may be identical to another device, only with a different sized screen or more memory or some other minor difference.  If you find an "ancestor" or "sibling" of your device, much of the work may already be done for you!
+</p>
+</div>
+<p>Much of the information you need may be available online, but assuming the device is already running a non-CyanogenMod version Android, you may also get some of that information from the device itself.  To view the files containing this information, the device may need to be rooted.  However, sometimes you can find a stock firmware update package online, and can view the files from the <code>.zip</code> archive file.
+</p>
+<h3><span class="mw-headline" id="Look_at_the_device.27s_current_.2Fsystem.2Fbuild.prop">Look at the device's current <code>/system/build.prop</code></span></h3>
+<p>Assuming the device is already running a version of Android, there should be a file, <code>/system/build.prop</code>, on the device which may contain useful information that will come into play as you do your port.  This file contains definitions for various parameters and settings used by Android.
+</p><p>So, if you have previously installed <a href="/w/Adb" title="Adb" class="mw-redirect">adb</a> onto your computer, you can use the following command to pull this file to your computer:
+</p><p><code>adb pull /system/build.prop</code>
+</p><p>If you receive an error relating to permissions, the device may need to be <a href="/w/Basic_concepts#.22rooting.22" title="Basic concepts">rooted</a> to gain access to this file.  However, there are other ways to locate this file.  For example, it may be included in any stock firmware "upgrade" package online.
+</p><p>Once you have the file...
+</p>
+<ul><li> Write down the value of the <code>ro.product.manufacturer</code> parameter. This will be your <b>vendor</b> name.  The <b>[vendor]</b> is the name of the manufacturer/vendor of the device.  CM has established naming conventions for most major vendors, such as <code>samsung</code>, <code>htc</code>, <code>lge</code>, etc.  Note that in these directory names, the vendor is always lowercase and contains no spaces.</li>
+<li> Write down the value of the <code>ro.product.device</code> parameter. This will be your device <b>codename</b>.  The <b>[codename]</b> corresponds to the project code name of the device itself. This is almost <b>never</b> the sales name of the device.  If you have built CM before (and again, you better have!), you should be familiar with the concept of a code name for each device.  Like the vendor name, the codename is always lowercase and contains no spaces.</li></ul>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Note: </b></p>
+<p>Sometimes a device is identified in other parameters such as <code>ro.product.board</code>
+</p>
+</div>
+<p>Keep the <code>build.prop</code> file handy, as you may refer to it later.
+</p>
+<h3><span class="mw-headline" id="Examine_boot.img_and_recovery.img">Examine <code>boot.img</code> and <code>recovery.img</code></span></h3>
+<p>As stated, when doing your port, you may wish to use an existing pre-built <b>kernel</b> that you know works instead of building one from source code.  Depending on your device, you may need to extract this kernel file from the device.  The kernel may exist as a single file (as it does on many OMAP devices) or may be wrapped up along with the ramdisk in a boot or recovery partition.
+</p><p>Similarly, the contents of the stock <b>ramdisk</b> may be extremely helpful and can often be extracted and reviewed.  It may be the case that a device requires specific files from the stock ramdisk in order to boot properly, load a module, etc.  In most cases you can view files in the ramdisk from the device itself, but it you may prefer to look at the full directory.
+</p>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Note: </b></p>
+<p>The ramdisk is a tiny group of files and directories that are loaded into memory along with the kernel.  The kernel then runs one of the files in the ramdisk called <code>init</code>, which then runs a script (<code>init.rc</code>, <code>init.[codename].rc</code>, etc.) that in turns loads the rest of Android.  The ramdisk and kernel can be packaged together in a number of different ways using tools with names like <code>mkbootimg</code>, <code><a rel="nofollow" target="_blank" class="external text" href="http://linux.die.net/man/1/mkimage">mkimage</a></code>, and other methods.
+</p>
+</div>
+<p>You can frequently extract the boot and recovery images (to a file you name <code>boot.img</code> and <code>recovery.img</code>) on a rooted Android device using <a rel="nofollow" target="_blank" class="external text" href="https://en.wikipedia.org/wiki/Dd_(Unix)">dd</a>.  Or, if you have access to an update <code>.zip</code> file from the vendor, you can often find those files within.
+</p>
+<h3><span class="mw-headline" id="Collect_any_available_existing_source_code">Collect any available existing source code</span></h3>
+<p>The manufacturer or vendor of any device using Android will minimally need to make the source code available for all <a href="https://en.wikipedia.org/wiki/Gpl" class="extiw" title="wikipedia:Gpl">GPL</a> components upon request, including (and especially) the kernel.  You definitely want to request a copy of the kernel source and keep it handy.
+</p>
+<h3><span class="mw-headline" id="Determine_the_partition_scheme">Determine the partition scheme</span></h3>
+<p>The primary long-term storage portion of your mobile device-- usually an "emmc" (<b>e</b>mbedded <a href="https://en.wikipedia.org/wiki/MultiMediaCard" class="extiw" title="wikipedia:MultiMediaCard"><b>m</b>ulti<b>m</b>edia <b>c</b>ard</a>)-- is much like a computer hard drive in that it is prepared in a particular way to identify and isolate different areas of data.  These unique areas are called <a href="https://en.wikipedia.org/wiki/Disk_partitioning" class="extiw" title="wikipedia:Disk partitioning">partitions</a> and they can have any kind of data stored there.  Some partitions contain raw data-- firmware, kernels, ramdisks, etc.  More often, a partition is formatted to use a particular <a href="https://en.wikipedia.org/wiki/List_of_file_systems" class="extiw" title="wikipedia:List of file systems">file system</a> that the kernel will recognize so that individual files and directories can be read and written there.
+</p><p>Before you can replace the stock operating system with CyanogenMod, it is therefore important to ascertain the <a href="https://en.wikipedia.org/wiki/Partition_table" class="extiw" title="wikipedia:Partition table">partition scheme</a> of the device.  The recovery image you build will need this information to know where to find the various Android directories.  Particularly, you want to know which partitions are assigned to <code>/system</code>, <code>/data</code>, <code>/cache</code>, and <code>/sdcard</code>.
+</p><p>You want to know which partitions exist, on what device, how they are mounted, as well as the size of the partitions.  This information may be transferred later to the <code>BoardConfig.mk</code> file in your <code>/vendor</code> directory.
+</p><p>If you're lucky, a <code>recovery.fstab</code> file can be located in a <code>recovery.img</code> file, speeding up the process of figuring out what goes where.  Also, the <code>init.[codename].rc</code> file in the ramdisk may have the information.  Look for the lines near the top where the partitions are <code>mount</code>ed.
+</p><p>Also, the command:
+</p><p><code>$ cat /proc/partitions</code>
+</p><p>from a running device can also help you identify the partitions.  Also see <code>/proc/emmc</code>, <code>/proc/mounts</code> or <code>/proc/mtd</code>.  You may also get some information from the command <code>mount</code> (run as root).
+</p><p>Also check <code>/cache/recovery.log</code> or <code>/tmp/recovery.log</code>.
+</p><p>Finally, if you have source code to the bootloader (such as the <a rel="nofollow" target="_blank" class="external text" href="http://www.denx.de/wiki/U-Boot">u-boot</a> used by many OMAP-based devices), you will likely find the information there as well.
+</p>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Note: </b></p>
+<p>Be aware that in some rare cases, such as the <a href="/w/Tenderloin_Info" title="Tenderloin Info">HP Touchpad</a>, an abstracted <a href="https://en.wikipedia.org/wiki/Virtual_file_system" class="extiw" title="wikipedia:Virtual file system">virtual file system</a> is used.
+</p>
+</div>
+<h2><span class="mw-headline" id="Set_up_three_new_directories">Set up three new directories</span></h2>
+<p>Now that you've gathered information about your device, it's time to generate the folders for your device configuration, located in the following directories, relative to the code source directory.  
+</p>
+<ul><li> <code>device/[vendor]/[codename]/</code> -- this is where the installation files specific to your device will go.  The <code>device/</code> directory contain 99-100% of the configuration settings and other code for particular devices.  You'll get to know this directory pretty well.  As mentioned, when starting the folder for this device, it may be a good idea to adapt a directory for an existing device that is architecturally similar to the one you wish to port.  Look for a device that is based on the same platform, for example.</li></ul>
+<ul><li> <code>vendor/[vendor]/[codename]/</code> --  The <code>vendor/</code> directory contains proprietary, binary "blobs" that are backed up from the original device (or provided by the vendor, such as in the case of Google Nexus devices and some TI graphics blobs).</li></ul>
+<ul><li> <code>kernel/[vendor]/[codename]/</code> -- the kernel source goes here.  When you first start your porting effort, you may wish to simplify things by using a pre-built kernel (such as the one that came with the stock installation) rather than building the kernel from scratch.  The trick to that will be extracting the kernel out of the stock system from whatever format it may be in, and then re-packaging it, along with a new ramdisk, into a form that your device can use.  This can vary from device-to-device, so it may again be helpful to look at similar devices to yours that use a similar architecture.  Building the kernel from source is not strictly necessary for every device, but in the spirit of open source, it is the preferred practice for CyanogenMod.  See <a href="/w/Doc:_integrated_kernel_building" title="Doc: integrated kernel building">here</a> for a detailed discussion about how CyanogenMod builds the kernel source from scratch.</li></ul>
+<p>There are at least three methods to generate these directories:
+</p>
+<h3><span class="mw-headline" id="Method_1:_Use_mkvendor.sh_to_generate_skeleton_files">Method 1:  Use <code>mkvendor.sh</code> to generate skeleton files</span></h3>
+<p>Use the <code>mkvendor.sh</code> script in <code>build/tools/device/</code> to automatically generate the directories.
+</p>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Note: </b></p>
+<p>The <code>mkvendor</code> script only works with devices that use a standard <code>boot.img</code> file, using the standard Android conventions and headers.  It won't work for devices that deviate from this standard (Nook Color, Touchpad, etc.).
+</p>
+</div>
+<p>This script accepts three parameters: <b>vendor</b>, <b>codename</b>, and a <code>boot.img</code> file.
+</p><p>Example usage:
+</p>
+<pre><code>$ ./build/tools/device/mkvendor.sh samsung i9300 ~/Desktop/i9300boot.img</code>
+</pre>
+<p>In the above example, <code>samsung</code> represents the <b>vendor</b>, <code>i9300</code> represents the <b>codename</b> and the last parameter is the path to the <code>boot.img</code> file that was extracted from the boot partition with <code>dd</code> or provided by the vendor in an update .zip as discussed above.
+</p><p>The command above should  create a <code>/device/samsung/i9300/</code> folder within your CyanogenMod source repo structure.  And inside the folder, the files <code>AndroidBoard.mk</code>, <code>AndroidProducts.mk</code>, <code>BoardConfig.mk</code>, <code>cm.mk</code>, <code>device_[codename].mk</code>, <code>kernel</code> (the binary), <code>recovery.fstab</code>, etc.
+</p><p>This will not build the <code>kernel/</code> directory.  You will need to do that later, when you are ready to build the kernel.
+</p>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Note: </b></p>
+<p>If it returns the message "unpackbootimg not found. Is your
+android build environment set up and have the host tools been built?" please be sure that you run the following command during setting up the developer environment:
+</p><p><code>$ make -j4 otatools</code>
+</p>
+</div>
+<h3><span class="mw-headline" id="Method_2:_Fork_a_similar_device.27s_git_repository">Method 2: Fork a similar device's git repository</span></h3>
+<p>If you've got a <a rel="nofollow" target="_blank" class="external text" href="https://www.github.com">GitHub</a> account, you might want to start by <a rel="nofollow" target="_blank" class="external text" href="https://help.github.com/articles/fork-a-repo">forking</a> another, similar device, and then rename it for your device.  See the <a href="/w/Doc:_porting_intro#Put_your_device_folder_in_github.2C_and_use_a_local_manifest_to_automatically_sync_it_with_repo_sync" title="Doc: porting intro">section on setting up github</a> for a discussion on how to name your repository.
+</p><p>Always be sure you're compliant with the license of any repository you fork.
+</p>
+<h3><span class="mw-headline" id="Method_3:_create_the_directories_and_files_manually">Method 3: create the directories and files manually</span></h3>
+<p>You can always start with an empty directory and start creating the files by hand.  This is the least recommended and perhaps the most tedious method, but it may be the most instructive.  You can look at other devices for reference on what files you need.
+</p>
+<h2><span class="mw-headline" id="Customize_the_files">Customize the files</span></h2>
+<p>There are many files in the <code>device/</code> folders.  We will start by focusing on four files <code>BoardConfig.mk</code>, <code>device_[codename].mk</code>, <code>cm.mk</code>, <code>recovery.fstab</code>, and <code>kernel</code> to get recovery working for your device.
+</p>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Helpful Tip – Start with the recovery!</b></p>
+<p>The first major step is to get a working recovery image for your device so that testing subsequent update.zips is easy and so that you can do backups if necessary.  These next few steps will therefore focus more on getting a working recovery than getting CM itself to work.  Once the recovery is built and operating safely, the work you've done for it will apply directly to the CM part.
+</p>
+</div>
+<p>Lets examine each of these files:<br />
+</p>
+<h3><span class="mw-headline" id="BoardConfig.mk"><code>BoardConfig.mk</code></span></h3>
+<p>This file contains vital architectual and build information about the architecture of your device's motherboard, CPU, and other hardware.  Getting this file right is essential.
+</p><p>To get a basic recovery booting, a few parameters need to be set in this file.
+</p><p>The following parameters must be set properly in <code>BoardConfig</code> to compile a working recovery image:
+</p>
+<ul><li><b>TARGET_ARCH</b>: this is the architecture of the device it is usually something like <b>arm</b> or <b>omap3</b>.</li>
+<li><b>BOARD_KERNEL_CMDLINE</b>: not all devices pass boot parameters however if your device does this <b>must</b> be filled out properly in order to boot successfully. You can find this information in the <code>ramdisk.img</code>.  (You can learn more about configuring the integrated kernel build-from-source <a href="/w/Doc:_integrated_kernel_building" title="Doc: integrated kernel building">here</a>.)</li>
+<li><b>BOARD_KERNEL_PAGESIZE</b>:  the pagesize of the stock <code>boot.img</code> and must be set properly in order to boot. Typical values for this are <b>2048</b> and <b>4096</b> and this information can be extracted from the stock kernel.</li>
+<li><b>BOARD_BOOTIMAGE_PARTITION_SIZE</b>:   the number of bytes allocated to the kernel image partition.</li>
+<li><b>BOARD_RECOVERYIMAGE_PARTITION_SIZE</b>:  the number of bytes allocated to the recovery image partition.</li>
+<li><b>BOARD_SYSTEMIMAGE_PARTITION_SIZE</b>:  the number of bytes allocated to the Android system filesystem partition.</li>
+<li><b>BOARD_USERDATAIMAGE_PARTITION_SIZE</b>:  the number of bytes allocated to the Android data filesystem partition.</li></ul>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Note: </b></p>
+<p>The above information can be obtained by multiplying the size from <code>/proc/partitions</code> or <code>/proc/mtd</code> by the block size, typically <b>1024</b>.
+</p>
+</div>
+<ul><li><b>BOARD_HAS_NO_SELECT_BUTTON</b>: (optional), use this if your device needs to use its <b>Power</b> button to confirm selections in recovery.</li>
+<li><b>BOARD_FORCE_RAMDISK_ADDRESS / BOARD_MKBOOTIMG_ARGS</b>: (optional), use these to force a specific address for the ramdisk. This is usually needed on larger partitions in order for the ramdisk to be loaded properly where it's expected to exist. This value can be obtained from the stock kernel. The former is deprecated as of Android 4.2.x and the latter will now be used in 4.2.x and beyond.</li></ul>
+<h3><span class="mw-headline" id="device_.5Bcodename.5D.mk"><code>device_[codename].mk</code></span></h3>
+<p>The <code>device_codename.mk</code> makefile contains instructions about which Android packages to build, and where to copy specific files and packages, or specific properties to set during your compilation.
+</p><p>This file can be used to copy vital files into the ramdisk at compilation time.
+</p>
+<ul><li><b>PRODUCT_COPY_FILES</b>: used to copy files during compilation into the ramdisk, which will be located at <code>$OUT/recovery/root</code>.</li></ul>
+<p>Example:
+</p>
+<pre><code>$(LOCAL_PATH)/sbin/offmode_charging:recovery/root/sbin/offmode_charging \</code>
+</pre>
+<p>This will copy the file offmode_charging binary into the <code>sbin</code> folder within the ramdisk.
+</p>
+<ul><li><b>PRODUCT_NAME / PRODUCT_DEVICE</b>: used for setting the value of your codename. This is the name of the device you load with <a href="/index.php?title=Lunch&amp;action=edit&amp;redlink=1" class="new" title="Lunch (page does not exist)">Lunch</a>.</li></ul>
+<h3><span class="mw-headline" id="kernel"><code>kernel</code></span></h3>
+<p>This is simply the prebuilt kernel image or a kernel you built yourself used to boot the device.  The format of the kernel may be in a zImage or uImage, depending on the requirements of the architecture of your device.<br />
+</p>
+<h3><span class="mw-headline" id="cm.mk"><code>cm.mk</code></span></h3>
+<p>You'll need to make a few changes to this file to integrate with the <code>lunch</code>, <code>brunch</code>, and <code>breakfast</code> commands, so that your device shows up on the list and builds properly.  You'll also set some variables (see other devices) to indicate what size splash animation should be used, whether this is a tablet or phone, etc.
+</p><p>Some of these settings aren't used for building just the recovery, but you may as well set them now because once recovery is done and working, the settings here will be important.
+</p><p>Again, take a look at a similar device to yours to get an idea of what the settings here should be.  It's fairly intuitive.
+</p>
+<h3><span class="mw-headline" id="recovery.fstab"><code>recovery.fstab</code></span></h3>
+<p><code>recovery.fstab</code>  defines the file system mount point, file system type, and block device for each of the partitions in your device.  It works almost exactly like <code>/etc/fstab</code> in a standard Linux operating system.
+</p><p>Example:
+</p>
+<pre><code>/system		ext4		/dev/block/mmcblk0p32 </code>
+</pre>
+<p>This sets the block device at <code>mmcblk0p32</code> to be mounted on <code>/system</code> as filesystem type <code>ext4</code>
+</p><p>All mountpoints should exist in this file and it is <b>crucial</b> this information be correct or else very bad things can happen, such as a recovery flash writing to the wrong location.
+</p>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Note: </b></p>
+<p>The filesystem type <code>datamedia</code> can be used for internal sdcards as well as setting the block device to <code>/dev/null</code>.
+</p>
+</div>
+<h3><span class="mw-headline" id="vendorsetup.sh"><code>vendorsetup.sh</code></span></h3>
+<p><code>vendorsetup.sh</code> is called when <code>setupenv.sh</code> is run.  It is used to add non-standard <code>lunch</code> combos to the <code>lunch</code> menu.
+</p><p>To add your device to the lunch menu:
+</p>
+<pre><code>add_lunch_combo cm_&lt;codename&gt;-userdebug</code>
+</pre>
+<h2><span class="mw-headline" id="Then_build_a_test_recovery_image">Then build a test recovery image</span></h2>
+<p>To build only the recovery, set up <code>lunch</code> as with a regular build, and say <code>make recoveryimage</code>
+</p><p>If things break (and they will break), have a look at these tips for <a href="/w/Doc:_dealing_with_build_errors" title="Doc: dealing with build errors">dealing with build errors</a>.
+</p>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Helpful Tip</b></p>
+<p>If you have <a href="/w/Fastboot" title="Fastboot" class="mw-redirect">fastboot</a>, you can try it to install the recovery image to the recovery partition.  There are other methods for installing the recovery, such as using <code>dd</code> from a rooted system to flash it into place.
+</p>
+</div>
+<p>Not much needs to be said here, but make sure the recovery is working before you move on to getting CyanogenMod working.  A 100%-working and reliable recovery mode is absolutely necessary before you start testing experimental Android builds.
+</p>
+<h3><span class="mw-headline" id="Adjust_recovery_ui.cpp_if_necessary">Adjust <code>recovery_ui.cpp</code> if necessary</span></h3>
+<p>You may discover that although the recovery image runs, some of the hardware buttons, such as the volume buttons or power buttons, which would normally be used to scroll through the options, don't work.
+</p><p>You may need to adjust the <a href="https://en.wikipedia.org/wiki/GPIO" class="extiw" title="wikipedia:GPIO">GPIO</a> values to get the buttons to be recognized.  Similarly, you may wish to include/exclude options or modify other UI elements.
+</p><p>To do this, you may wish to create and edit the <code>/device/[vendor]/[codename]/recovery/recovery_ui.cpp</code>.  You can find ample examples of this file, the associated <code>recovery/Android.mk</code> file that builds it, and how it is used.
+</p>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Helpful Tip</b></p>
+<p>The GPIO values for your device may be found in the kernel source.
+</p>
+</div>
+<p><br />
+</p>
+<h2><span class="mw-headline" id="Put_your_device_folder_in_github.2C_and_use_a_local_manifest_to_automatically_sync_it_with_repo_sync">Put your device folder in github, and use a local manifest to automatically sync it with repo sync</span></h2>
+<p>Once you've started your device folder, create your own <a rel="nofollow" target="_blank" class="external text" href="https://github.com">GitHub</a> account and <a rel="nofollow" target="_blank" class="external text" href="https://help.github.com/articles/creating-a-new-repository">set up your folder as a public GitHub repository</a>.  This is a great opportunity to learn about <a href="/w/Git" title="Git" class="mw-redirect">git</a>, and also your source can be accessible to others who can collaborate with you.
+</p><p>When naming your repository, use the format <b>android_device_VENDOR_CODENAME</b>, where VENDOR and CODENAME use the new device's values.  So, let's say your GitHub account name is "fat-tire" and your device codename is "<a href="/w/Encore_Info" title="Encore Info">encore</a>", manufactured by Barnes and Noble.   You should call your repository <b>android_device_bn_encore</b>.  It would be accessible at <b><a rel="nofollow" target="_blank" class="external free" href="https://github.com/fat-tire/android_device_bn_encore">https://github.com/fat-tire/android_device_bn_encore</a></b>.  Similarly, the kernel repository would be called <b>android_kernel_bn_encore</b>.  It would be accessible at <b><a rel="nofollow" target="_blank" class="external free" href="https://github.com/fat-tire/android_kernel_bn_encore">https://github.com/fat-tire/android_kernel_bn_encore</a></b>.
+</p><p>The last thing to do is create a <a href="/w/Local_manifest" title="Local manifest" class="mw-redirect">local manifest</a> for other people to use to automatically download and their keep up-to-date with your changes.  Here's an example, using the above scenario:
+</p>
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;manifest&gt;
+  &lt;project name="fat-tire/android_device_bn_encore" path="device/bn/encore" remote="github" revision="cm-10.1" /&gt;
+  &lt;project name="fat-tire/android_kernel_bn_encore" path="kernel/bn/encore" remote="github" revision="cm-10.1" /&gt;
+&lt;/manifest&gt;</code>
+</pre>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Note: </b></p>
+<p>The <i>revision</i> attribute is optional. If it is omitted, <code>repo sync</code> will use the revision specified by the <code>&lt;default ... /&gt;</code> tag in the <a href="/w/Doc:_Using_manifests#The_default_manifest" title="Doc: Using manifests">default manifest</a>.
+</p>
+</div>
+<p>Once you've tested that the <a href="/w/Local_manifest" title="Local manifest" class="mw-redirect">local manifest</a> file works, you can pass it on to others, who can then try out your work.  At that point you can continue to push your changes to GitHub, and even give other users commit access so that you can work on the device together.
+</p>
+<div class="infoBox" style="position:relative; padding:5px 5px 5px 73px; margin:0.4em 0 0.5em; background:#ddd; min-height:57px;">
+<div class="bar"></div>
+<p style="font-size:110%;"><b>Helpful Tip – Using other repositories</b></p>
+<p>If you find that for some reason you need to replace or supplement other repositories provided by CyanogenMod, you can add additional repositories using the <a href="/w/Local_manifest" title="Local manifest" class="mw-redirect">local manifest</a>.  Once you've got everything working, you can use <a href="/w/Gerrit" title="Gerrit" class="mw-redirect">Gerrit</a> to submit stuff found in those repositories back upstream to CyanogenMod.
+</p>
+</div>
+<h2><span class="mw-headline" id="Add_the_blobs_to_the_vendor.2F_directory">Add the blobs to the <code>vendor/</code> directory</span></h2>
+<p>Once you have a working recovery, it's now time to get CyanogenMod building and working.
+</p><p>The first thing to do is to get all the proprietary, binary blobs into the <code>vendor/</code> folder, along with a <code>.mk</code> file that will include them in the final build.
+</p><p>This requires three steps:
+</p>
+<ol><li>Create <code>extract-files.sh</code> and <code>setup-makefiles.sh</code> scripts to pull those blob files from the device using <code>adb</code> and put them in the right <code>/vendor/</code> directory.  There are plenty of examples available for other devices.</li>
+<li>Create an <code>.mk</code> Makefile to copy those files to the <code>$OUT</code> folder during the build process and put them in the right place.  Again, use other devices as a guide for what this Makefile should look like.  An example filename might be <code>BoardConfigVendor.mk</code></li>
+<li>Make sure that the Makefile you just created is included from your main <code>BoardConfig.mk</code> via a command such as <code>-include vendor/[vendor]/[codename]/BoardConfigVendor.mk</code>.  Again, existing devices can illustrate how this is done.</li></ol>
+<h2><span class="mw-headline" id="Now_revise_the_device.2F_directory">Now revise the <code>device/</code> directory</span></h2>
+<p>Since you have a working recovery, go back and start modifying the files in the <code>device/</code> folder.  As always, use other similar devices as a reference.
+</p><p>You now have a easy means to do backups and test your builds.  So start tweaking the device folder itself, and see if you get it to boot...  Once you do, from there its a matter of building and supporting the various parts and peripherals, one-by-one.
+</p>
+<h2><span class="mw-headline" id="Getting_help_from_the_manufacturers_.26_vendors">Getting help from the manufacturers &amp; vendors</span></h2>
+<p>Many of the OEMs (Original Equipment Manufacturers) who make the underlying platform used by your device frequently provide wikis, documentation, and sample code that can assist you in completing your port.  You'll find that some companies are more friendly to the development community than others.  Here are some of the more common OEMs and vendors, along with web sites and repositories that may help.
+</p><p>(This list is incomplete.  Please help add to it)
+</p>
+<table class="wikitable">
+<tr>
+<th> OEM </th>
+<th> Platform </th>
+<th> Repositories/Resources
+</th></tr>
+<tr>
+<td>Google </td>
+<td> various </td>
+<td> <a rel="nofollow" target="_blank" class="external text" href="https://android.googlesource.com/">Google's Git Repository </a> , <a rel="nofollow" target="_blank" class="external text" href="https://developers.google.com/android/nexus/drivers">Nexus binary blobs</a>
+</td></tr>
+<tr>
+<td>HTC </td>
+<td> various </td>
+<td> <a rel="nofollow" target="_blank" class="external text" href="http://htcdev.com/devcenter/">Dev Center</a>
+</td></tr>
+<tr>
+<td>HP </td>
+<td> various </td>
+<td> <a rel="nofollow" target="_blank" class="external text" href="http://www.hp.com/software/opensource">HP Open Source</a>
+</td></tr>
+<tr>
+<td>Lenovo </td>
+<td> various </td>
+<td> <a rel="nofollow" target="_blank" class="external text" href="http://support.lenovo.com/us/en/products/phones?c=1">Lenovo Smartphones (Search your device)</a>
+</td></tr>
+<tr>
+<td>LG </td>
+<td> various </td>
+<td> <a rel="nofollow" target="_blank" class="external text" href="http://www.lg.com/global/support/opensource/index/">LG Open Source Code Distribution</a>
+</td></tr>
+<tr>
+<td>Motorola </td>
+<td> various </td>
+<td> <a rel="nofollow" target="_blank" class="external text" href="https://www.motorola.com/us/Motorola-Developers/motorola-developers.html#motorola-developers-multi-source-code">Motorola Open Source Center</a>
+</td></tr>
+<tr>
+<td>Nvidia </td>
+<td> Tegra </td>
+<td> <a rel="nofollow" target="_blank" class="external text" href="http://nv-tegra.nvidia.com/gitweb/">Tegra's GitWeb</a>
+</td></tr>
+<tr>
+<td>Qualcomm </td>
+<td> MSM/QSD </td>
+<td> <a rel="nofollow" target="_blank" class="external text" href="https://www.codeaurora.org/">Code Aurora Forum</a>
+</td></tr>
+<tr>
+<td>Samsung </td>
+<td> various </td>
+<td> <a rel="nofollow" target="_blank" class="external text" href="http://opensource.samsung.com/">Samsung Open Source Release Center</a>
+</td></tr>
+<tr>
+<td>Texas Instruments </td>
+<td> OMAP </td>
+<td> <a rel="nofollow" target="_blank" class="external text" href="http://www.omapzoom.com">www.omapzoom.com</a> , <a rel="nofollow" target="_blank" class="external text" href="http://www.omappedia.org">Omappedia</a>
+</td></tr></table>
+<p>Sometimes if you have questions you can even reach out to the developers via email or the support forums.
+</p>
+<h2><span class="mw-headline" id="Adding_XML_Overlays">Adding XML Overlays</span></h2>
+<p>It's very likely in your <code>device_[codename].mk</code> file, there's a line that looks like this:
+</p>
+<pre>DEVICE_PACKAGE_OVERLAYS&#160;:= \
+    device/[vendor]/[codename]/overlay
+</pre>
+<p>What this does is set the <code>overlay/</code> folder to allow you to override any XML file used by Android frameworks or apps, just for this device.  To do so, create a directory structure which mirrors the path leading to an XML file, starting from the root of your source.  Then replace the file you want to overlay.
+</p><p>Example:   Let's say you want to override some standard Android settings.  Look at the file in <code>frameworks/base/core/res/res/values/config.xml</code>.  Then copy it to <code>device/[vendor]/[codename]/overlay/frameworks/base/core/res/res/values/config.xml</code>.  Now YOUR version will be used instead of the other one.  You only need to include the settings you wish to override-- not all of them, so you can pare down the file to those few that change from the default.
+</p><p>You can overlay any XML file, affecting layouts, settings, preferences, translations, and more.
+</p>
+<h2><span class="mw-headline" id="Make_the_kernel_and_kernel_modules_build_from_source">Make the kernel and kernel modules build from source</span></h2>
+<p>If you have previously used a pre-built kernel, you may at some point want to start building the kernel from scratch.
+</p><p>See the instructions for how to change the <code>BoardConfig.mk</code> file to make CyanogenMod <a href="/w/Doc:_integrated_kernel_building" title="Doc: integrated kernel building">build the kernel and any required kernel modules automatically</a>.
+</p>
+<h2><span class="mw-headline" id="Conclusion">Conclusion</span></h2>
+<p>There's no way a single wiki page will tell you everything you need to know to do a port from beginning to end.  However, hopefully you now have an understanding of how things are set up and the steps you need to take.  You an always ask for help on the <a rel="nofollow" target="_blank" class="external text" href="https://forum.cyanogenmod.org">forums</a> or on <a href="/w/IRC" title="IRC" class="mw-redirect">IRC</a>.  Others with the same device may jump in to help too.
+</p><p>Hopefully you'll find the process rewarding and educational.  And it'll get you some street cred as well.
+</p><p>When you're all done, and your port works better than stock... when it's stable and shiny and marvelous and wonderful...
+</p><p>You may want to contribute your work upstream.  <a href="/w/Doc:_Submitting_A_Port" title="Doc: Submitting A Port">Here are the instructions</a> for how to do just that.
+</p><p>Good luck!
+</p>
+<h2><span class="mw-headline" id="See_Also">See Also</span></h2>
+<ul><li> <a rel="nofollow" target="_blank" class="external text" href="https://groups.google.com/forum/?fromgroups#!forum/android-porting">Android-Porting</a> -- the official Google Group on this topic</li>
+<li> <a rel="nofollow" target="_blank" class="external text" href="https://forum.cyanogenmod.org/topic/15492-general-cyanogenmod-porting-discussion/">General CyanogenMod Porting Discussion</a> -- a forum post on porting</li></ul>
+
+	</body>
+</html>
+
