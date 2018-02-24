@@ -8,9 +8,9 @@
 
 <p><span style="font-family:arial,helvetica,sans-serif;">Here&#39;s a link to my demo: &nbsp;<a href="https://drive.google.com/file/d/0B_oPSXZoVv8HeTNzVmd0RGtldHM/view">video</a></span></p>
 
-<p><span style="font-family:arial,helvetica,sans-serif;">For this tutorial I&#39;m going to assume you&#39;re using Ubuntu Linux. &nbsp;In fact, I <a href="https://github.com/fat-tire/floreantpos_updater">wrote a script</a> that will automatically&nbsp;install Floreant for you on Ubuntu... and keep it current&nbsp;as the code is updated.</span></p>
+<p><span style="font-family:arial,helvetica,sans-serif;">For this tutorial I&#39;m going to assume you&#39;re using Ubuntu Linux. &nbsp;In fact, I <a href="https://github.com/fat-tire/floreantpos_updater">wrote a script</a> that will automatically&nbsp;install Floreant for you on Ubuntu... and keep it current&nbsp;as the code is updated.</span></p>  I've also mirrored <a href="https://sourceforge.net/p/floreantpos/code/HEAD/tree/">source code from Sourceforge.net's subversion repository</a> on github <a href="https://github.com/fat-tire/floreantpos">here</a>, although by the time you read this it is likely not up to date, but still might be useful for quick searches or whatever.
 
-<p><span style="font-family:arial,helvetica,sans-serif;">My script puts the latest build of Floreant on your Desktop in a folder called <span style="font-family:courier new,courier,monospace;">active_floreantpos</span>, so that&#39;s the name I&#39;m going to use in this example.</span></p>
+<p><span style="font-family:arial,helvetica,sans-serif;">My script (assuming it still works) puts the latest build of Floreant on your Desktop in a folder called <span style="font-family:courier new,courier,monospace;">active_floreantpos</span>, so that&#39;s the name I&#39;m going to use in this example.</span></p>
 
 <p>&nbsp;</p>
 
@@ -26,7 +26,7 @@
 
 <p><img src="https://i.imgur.com/b0DxlER.png" style="width: 50%;" /></p>
 
-<p><span style="font-family:arial,helvetica,sans-serif;"><strong>The secret sauce is&nbsp;<a href="http://webswing.org">W</a><a href="http://webswing.org/">ebswing</a></strong>. &nbsp;It&#39;s an open source,&nbsp;HTML5-only (no non-web technologies)&nbsp;web server that serves Java swing apps directly&nbsp;to the web.</span></p>
+<p><span style="font-family:arial,helvetica,sans-serif;"><strong>The secret sauce is&nbsp;<a href="http://webswing.org/">Webswing</a></strong>. &nbsp;It&#39;s an open source,&nbsp;HTML5-only (no non-web technologies)&nbsp;web server that serves Java swing apps directly&nbsp;to the web.</span></p>
 
 <p><span style="font-family:arial,helvetica,sans-serif;">Since FloreantPOS is a Java app that uses Swing for its UI, there&#39;s not much to it than that!</span></p>
 
@@ -49,7 +49,7 @@
 	<br />
 	<span style="font-family:arial,helvetica,sans-serif;">(I think this is all the packages. &nbsp;Hopefully I didn&#39;t miss any but will update these instructions if I did.)</span></span><br />
 	&nbsp;</li>
-	<li><span style="font-family:arial,helvetica,sans-serif;">Download a <a href="http://jenkins.webswing.org/job/webswing%20master/lastSuccessfulBuild/artifact/webswing-assembly/dist/webswing-2.4-SNAPSHOT-distribution.zip">recent 2.4 build of Webswing</a>, and unzip it to your <span style="font-family:courier new,courier,monospace;">Desktop</span> to a folder you should call&nbsp;</span><span style="font-family: 'courier new', courier, monospace;">webview</span><span style="font-family:arial,helvetica,sans-serif;">. &nbsp;(Refer to <a href="http://jenkins.webswing.org/job/webswing%20master/doclinks/1/server/install/">these docs</a> if you need help for the next few sections.)</span><br />
+	<li><span style="font-family:arial,helvetica,sans-serif;">Download a <a href="http://builds.webswing.org/">recent build of Webswing</a>, and unzip it to your <span style="font-family:courier new,courier,monospace;">Desktop</span> to a folder you should call&nbsp;</span><span style="font-family: 'courier new', courier, monospace;">webview</span><span style="font-family:arial,helvetica,sans-serif;">. &nbsp;(Refer to <a href="http://jenkins.webswing.org/job/webswing%20master/doclinks/1/server/install/">these docs</a> if you need help for the next few sections.)</span><br />
 	&nbsp;</li>
 	<li><span style="font-family:arial,helvetica,sans-serif;">Inside, there&#39;s a file called <span style="font-family:courier new,courier,monospace;">start.sh</span>. &nbsp;I had to make a few modifications to get this to run &quot;headlessly&quot;:<br />
 	<br />
@@ -90,7 +90,7 @@
 	<br />
 	If you have problems logging in, again you can refer to <a href="http://jenkins.webswing.org/job/webswing%20master/doclinks/1/server/install/">here</a>. &nbsp;If <span style="font-family:courier new,courier,monospace;">start.sh</span>  crashes, check the script-- you may have commented out the wrong lines (?) &nbsp;Or perhaps there is a dependency missing that you still need to install. &nbsp;Review the documentation for clues.<br />
 	<br />
-	Assuming you were able to log in, you can now follow the instructions on Webswing&#39;s <a href="http://jenkins.webswing.org/job/webswing%20master/doclinks/1/#quick-start-guide">Quick Start Guide</a> for how to add FloreantPOS as a web app.<br />
+	Assuming you were able to log in, you can now follow the instructions on Webswing&#39;s <a href="http://webswing.org/2.4/#quick-start-guide">Quick Start Guide</a> for how to add FloreantPOS as a web app.<br />
 	<br />
 	To help you with this, here are the relevant settings that were added to my webswing.config file after I added floreant. &nbsp;You can use these values, but don&#39;t forget to change <strong>fattire</strong> to your own user name.</span><br />
 	<br />
@@ -142,27 +142,27 @@
 	<li><span style="font-family:arial,helvetica,sans-serif;">The browser may or may not permit pinch-zooming&nbsp;and may not be scaled properly so that you get the full app on the screen. &nbsp;You don&#39;t want to have to slide your finger around everywhere to center the app or to find the area you want to touch. &nbsp;That sucks.</span></li>
 </ul>
 
-<p><span style="font-family:arial,helvetica,sans-serif;">My solution: &nbsp;Implement a custom Android app to:</span></p>
+<p><span style="font-family:arial,helvetica,sans-serif;">My solution: an Android app to:</span></p>
 
 <ol>
-	<li><span style="font-family:arial,helvetica,sans-serif;">Present a full-screen <a href="http://developer.android.com/reference/android/webkit/WebView.html">WebView</a> and load it with the Floreant Web App. &nbsp;Don&#39;t include a URL bar, menu bar, or any other &quot;bells and whistles&quot; &nbsp;Just start and immediately present it with the interface.</span><br />
-	&nbsp;</li>
-	<li><span style="font-family:arial,helvetica,sans-serif;">Automatically scale it to &quot;full screen&quot; so that you get the whole page scaled to the dimensions of the tablet/phone. &nbsp;Don&#39;t allow scrolling or anything.</span></li>
+	<li><span style="font-family:arial,helvetica,sans-serif;">It presents a full-screen <a href="http://developer.android.com/reference/android/webkit/WebView.html">WebView</a> and loads it with the Floreant Web App. &nbsp;Doesn&#39;t include a URL bar, menu bar, or any other &quot;bells and whistles&quot; &nbsp;Just starts and immediately presents the interface.</span><br /></li>
+	<li><span style="font-family:arial,helvetica,sans-serif;">Can be used to automatically scale to to &quot;full screen&quot; so you get the whole page scaled to the dimensions of the tablet/phone.</span><br/></li>
+	<li><span style="font-family:arial,helvetica,sans-serif;">You can change the viewport preferences and URL-related stuff in the settings</span></li>
 </ol>
 
-<p><span style="font-family:arial,helvetica,sans-serif;">Writing this app took about 10 minutes, and I&#39;m sure an iOS app would not take very long either. &nbsp;If there is interest, I can post the source and a binary for download, though I guess I&#39;d need to add some kind of interface so you could set the URL, which I hard-coded.</span></p>
+<p span style="font-family:arial,helvetica,sans-serif;">Couldn't be more basic.</p>
+
+<p style="font-family:arial,helvetica,sans-serif;"><b>Update:</b>  Per request, I've posted my app source code (released under the GPL).  It's called HipPOS <a href="https://www.github.com/fat-tire/hippos">and you can grab source code here</a>.  I did make a lot of the UI changes that I figured would be useful.</p>
 
 <p><span style="font-family:arial,helvetica,sans-serif;"><strong>CAVEATS</strong>:</span></p>
 
 <ul>
+	<li style="font-family:arial,helvetica,sans-serif;">Smaller tablets and phones with an effective resolution of less than 1024 width may notice that the main floreantPOS window "cuts off" because it's bigger than the view area.  I'm not sure, but this may be related to <a href="https://github.com/fat-tire/floreantpos/blob/4ba271160024355cc1f096d7b3648c194145bca2/src/com/floreantpos/main/PosWindow.java#L156">code that makes the minimum size 1024x724</a>.  You may want to play with the floreant source code (the latest is on sourceforge.net, tho I mirrored a non-up-to-date version <a href="https://github.com/fat-tire/floreantpos">here</a>.
 	<li><span style="font-family:arial,helvetica,sans-serif;">I have not tested to see how well this scales or performs under any kind of load.</span></li>
-	<li><span style="font-family:arial,helvetica,sans-serif;">The above does not use SSL or encryption of any kind across the network. &nbsp;SSL is available in webswing however. &nbsp;I just didn&#39;t play with it yet.</span></li>
+	<li><span style="font-family:arial,helvetica,sans-serif;">The above does not use SSL or encryption of any kind across the network. &nbsp;SSL is available in webswing however. &nbsp;I just didn&#39;t play with it yet. The HipPOS app ignores SSL errors, which I think/hope may allow self-signed certificates to work.</span></li> 
 	<li><span style="font-family:arial,helvetica,sans-serif;">This example uses default passwords. &nbsp;You want to change those!</span></li>
         <li><span style="font-family:arial,helvetica,sans-serif;">My changes to <span style="font-family:courier new,courier,monospace;">start.sh</span> are probably not always needed and certainly not complete as Xvfb is never killed so multiple versions may hang around.  There's probably a better solution, but these steps are just what I did quickly to get a proof-of-concept going</span></li>
+					<li><span style="font-family:arial,helvetica,sans-serif;">I see there is a 2.6 version of webswing in development, which may work differently.</span></li>
 </ul>
-
-<p>&nbsp;</p>
 </body>
 </html>
-
-v
